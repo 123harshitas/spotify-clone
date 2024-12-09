@@ -1,0 +1,104 @@
+console.log("Welcome to Spotify");
+let songIndex = 0;
+let audioElement = new Audio('songs/1.mp3');
+let masterplay = document.getElementById('masterPlay');
+let myProgreeBar = document.getElementById('myProgressBar');
+let gif = document.getElementById('gif');
+let songItems = Array.from(document.getElementsByClassName('songItem'));
+let songs = [
+    { songName: "Maiyya", filepath: "songs/1.mp3", coverpath: "covers/1.jpg" },
+    { songName: "Chaleya", filepath: "songs/2.mp3", coverpath: "covers/2.jpg" },
+    { songName: "Jawan Prevue Theme", filepath: "songs/3.mp3", coverpath: "covers/3.jpg" },
+    { songName: "Tauba Tauba", filepath: "songs/4.mp3", coverpath: "covers/4.jpg" },
+    { songName: "Apna Bana Le ", filepath: "songs/5.mp3", coverpath: "covers/5.jpg" },
+    { songName: "Ek Din Aap ", filepath: "songs/6.mp3", coverpath: "covers/6.jpg" },
+    { songName: "O Mahhi ", filepath: "songs/7.mp3", coverpath: "covers/7.jpg" },
+    { songName: "Adhram Madhuram", filepath: "songs/8.mp3", coverpath: "covers/8.jpg" },
+    
+];
+ songItems.forEach((element, i) => {
+    console.log(element, i);
+    element.getElementsByTagName("img")[0].src = songs[i].coverpath;
+    element.getElementsByClassName("songName")[0].innerText = songs[i].songName;
+});
+
+songItems.forEach((element, i) => {
+    element.getElementsByTagName("img")[0].src = songs[i].coverpath;
+    element.getElementsByClassName("songName")[0].innerText = songs[i].songName;
+    
+});
+  
+
+masterplay.addEventListener('click',()=>{
+    if (audioElement.paused || audioElement.currentTime <= 0) {
+        audioElement.play();
+        masterplay.classList.remove('fa-circle-play');
+        masterplay.classList.add('fa-circle-pause');
+        gif.style.opacity=1;
+    } else {
+        audioElement.pause();
+        masterplay.classList.remove('fa-circle-pause');
+        masterplay.classList.add('fa-circle-play');
+        gif.style.opacity=0;
+    }
+    
+})
+
+//listen to events
+audioElement.addEventListener('timeupdate',()=>{
+    //update Seekbar
+    progress = parseInt((audioElement.currentTime/audioElement.duration)*100);
+    console.log(progress);
+    myProgreeBar.value = progress;
+
+})
+myProgreeBar.addEventListener('change' , ()=>{
+   audioElement.currentTime = myProgreeBar.value * audioElement.duration/100;
+})
+const makeAllplays = () => {
+    Array.from(document.getElementsByClassName('songItemplay')).forEach((element) => {
+        element.classList.remove('fa-circle-pause');  
+        element.classList.add('fa-circle-play');
+    });
+};
+
+Array.from(document.getElementsByClassName('songItemplay')).forEach((element) => {
+    element.addEventListener('click', (e) => {
+        makeAllplays();
+        let index = parseInt(e.target.id); 
+        e.target.classList.remove('fa-circle-play');  
+        e.target.classList.add('fa-circle-pause');
+        audioElement.src = `songs/${index}.mp3`;
+        masterSongName .innerText= songs[songIndex].songName;
+        audioElement.play(); 
+        gif.style.opacity = 1;
+        //  logic for masterplay class
+        masterplay.classList.remove('fa-circle-play');  
+        masterplay.classList.add('fa-circle-pause');
+    });
+});
+document.getElementById('next').addEventListener('click', () => {
+    if (songIndex >= 9) {
+        songIndex = 0;
+    } else {
+        songIndex += 1;
+    }
+    audioElement.src = `songs/${songIndex}.mp3`;
+    audioElement.currentTime = 0;
+    audioElement.play();
+    masterplay.classList.remove('fa-circle-play');
+    masterplay.classList.add('fa-circle-pause');
+});
+
+document.getElementById('previous').addEventListener('click', () => {
+    if (songIndex <= 0) {
+        songIndex = 0;
+    } else {
+        songIndex -= 1;
+    }
+    audioElement.src = `songs/${songIndex}.mp3`;
+    audioElement.currentTime = 0;
+    audioElement.play();
+    masterplay.classList.remove('fa-circle-play');
+    masterplay.classList.add('fa-circle-pause');
+});
